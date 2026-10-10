@@ -1,0 +1,20 @@
+# Virtual Environment
+venv/
+env/
+
+# Python / Django
+__pycache__/
+*.pyc
+backend/.env
+backend/db.sqlite3
+backend/media/
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env
+
+# IDE / OS Files
+.DS_Store
+.vscode/

@@ -1,0 +1,73 @@
+/* frontend/src/index.css */
+
+/* 1. TAILWIND V4 MAIN IMPORT */
+@import "tailwindcss";
+
+/* 2. TAILWIND V4 THEME CONFIGURATION */
+:root {
+  --color-gold: #D4AF37;
+  --color-gold-light: #F4D03F;
+  --color-dark: #0A0A0A;
+  --color-card: #1A1A1A;
+  --color-gray-dark: #2D2D2D;
+  --color-gray-light: #B0B0B0;
+  --color-success: #27AE60;
+  --color-error: #E74C3C;
+
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+}
+
+/* 3. GLOBAL BASE STYLES */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0A0A0A !important;
+  color: #ffffff !important;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* 4. EXPLICIT UTILITY CLASSES */
+.bg-dark { background-color: #0A0A0A !important; }
+.bg-card { background-color: #1A1A1A !important; }
+.bg-gray-dark { background-color: #2D2D2D !important; }
+
+.bg-gold { background-color: #D4AF37 !important; }
+.bg-gold-light { background-color: #F4D03F !important; }
+
+.text-gold { color: #D4AF37 !important; }
+.text-gold-light { color: #F4D03F !important; }
+.text-white { color: #FFFFFF !important; }
+.text-gray-light { color: #B0B0B0 !important; }
+
+.border-gold { border-color: #D4AF37 !important; }
+.border-gray-dark { border-color: #2D2D2D !important; }
+
+/* 5. SCROLLBARS */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 4px;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
