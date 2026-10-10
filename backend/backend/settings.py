@@ -4,14 +4,14 @@ from dotenv import load_dotenv
 from datetime import timedelta
 from urllib.parse import urlparse
 
-# Load .env file
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-secret-key-here')
 
-# False in production, True only when testing locally
+
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']

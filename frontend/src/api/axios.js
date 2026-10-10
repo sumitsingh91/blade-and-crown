@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// ⚠️ REPLACE 'https://blade-and-crown-backend.onrender.com' WITH YOUR ACTUAL RENDER BACKEND URL IF DIFFERENT
+
 const BASE_URL = import.meta.env.VITE_API_URL || 'https://blade-and-crown-backend.onrender.com/api';
 
 const API = axios.create({
