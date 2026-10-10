@@ -25,9 +25,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third party
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders',
     'django_filters',
 
     # Local apps
@@ -109,16 +109,17 @@ else:
     }
 
 # --------------------------------------------------
-# CORS CONFIGURATION (Bulletproof for Vercel)
+# CORS CONFIGURATION
 # --------------------------------------------------
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+# Explicit allowed origins as fallback
 CORS_ALLOWED_ORIGINS = [
     "https://blade-and-crown-ten.vercel.app",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "http://localhost:3000",
 ]
-
-CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_HEADERS = [
     'accept',
