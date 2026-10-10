@@ -1,15 +1,19 @@
-# backend/backend/settings.py
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
+from urllib.parse import urlparse
 
 # Load .env file
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-secret-key-here')
-DEBUG = True
+
+# False in production, True only when testing locally
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
@@ -22,7 +26,7 @@ INSTALLED_APPS = [
 
     # Third party
     'rest_framework',
-    'rest_framework_simplejwt',  # 👈 Added this! Required for login/signup
+    'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
 
@@ -40,8 +44,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',          # Must be at the top
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',     # Serves static files on Render
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -52,7 +57,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 
-# Unified TEMPLATES array (includes emails folder)
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -69,23 +73,46 @@ TEMPLATES = [
     },
 ]
 
-# Database - PostgreSQL
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'blade_and_crown_db',
-        'USER': 'postgres',
-        'PASSWORD': 'Sumit@9334', 
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+WSGI_APPLICATION = 'backend.wsgi.application'
 
-# CORS
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+# --------------------------------------------------
+# DATABASE SETUP (Pure Python - Zero Errors!)
+# On Render: Uses Render's PostgreSQL (from DATABASE_URL)
+# On your PC: Uses your local PostgreSQL (blade_and_crown_db)
+# --------------------------------------------------
+DATABASE_URL = os.getenv('DATABASE_URL')
+
+if DATABASE_URL:
+    # ☁️ PRODUCTION (Render PostgreSQL)
+    db_info = urlparse(DATABASE_URL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': db_info.path[1:],
+            'USER': db_info.username,
+            'PASSWORD': db_info.password,
+            'HOST': db_info.hostname,
+            'PORT': db_info.port or 5432,
+        }
+    }
+else:
+    # 💻 LOCAL DEVELOPMENT (Your Computer's PostgreSQL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'blade_and_crown_db',
+            'USER': 'postgres',
+            'PASSWORD': 'Sumit@9334',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
+
+# --------------------------------------------------
+# CORS - Allow Vercel Frontend + Localhost
+# --------------------------------------------------
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -112,21 +139,31 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# Media and Static files
+# --------------------------------------------------
+# Static & Media Files
+# --------------------------------------------------
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] if os.path.exists(os.path.join(BASE_DIR, 'static')) else []
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
-# Stripe Configuration
+# --------------------------------------------------
+# Stripe
+# --------------------------------------------------
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY', '')
 
+# --------------------------------------------------
 # AI / Gemini API
+# --------------------------------------------------
 GCP_API_KEY = os.getenv('GCP_API_KEY', '')
 
-# Email Configuration (Gmail SMTP)
+# --------------------------------------------------
+# Email (Gmail SMTP)
+# --------------------------------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -135,7 +172,7 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = f'Blade & Crown <{EMAIL_HOST_USER}>'
 
-# Frontend URL for email links
-FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+# Frontend URL (used in emails / password reset links)
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'https://blade-and-crown-ten.vercel.app')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

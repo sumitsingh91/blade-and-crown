@@ -1,8 +1,10 @@
-// frontend/src/api/axios.js
 import axios from 'axios';
 
+// ⚠️ REPLACE 'https://blade-and-crown-backend.onrender.com' WITH YOUR ACTUAL RENDER BACKEND URL IF DIFFERENT
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://blade-and-crown-backend.onrender.com/api';
+
 const API = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -32,7 +34,7 @@ API.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('refresh_token');
         const response = await axios.post(
-          'http://127.0.0.1:8000/api/auth/token/refresh/',
+          `${BASE_URL}/auth/token/refresh/`,
           { refresh: refreshToken }
         );
 
