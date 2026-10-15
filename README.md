@@ -1,2 +1,3 @@
-# blade-and-crown
-Your destination for professional-grade grooming supplies and gentleman's lifestyle accessories.
+# 👑 Blade & Crown
+**Elevating the art of modern grooming.** 
+Curated professional-grade supplies and sophisticated lifestyle accessories for the modern gentleman.
